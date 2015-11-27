@@ -11,8 +11,11 @@ import fetchComponentData from 'lib/fetchComponentData';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import path from 'path';
 import webpackDev from './webpack.dev';
+import compression from 'compression';
+const { syncReduxAndRouter, routeReducer } = require('redux-simple-router');
 
 const app = express();
+app.use(compression());
 
 if (process.env.NODE_ENV !== 'production') {
   webpackDev(app);
@@ -22,23 +25,26 @@ if (process.env.NODE_ENV !== 'production') {
 
 app.use( (req, res) => {
   const location = createLocation(req.url);
-  const reducer  = combineReducers(reducers);
-  const store    = applyMiddleware(promiseMiddleware)(createStore)(reducer);
+  const reducer = combineReducers(reducers);
+  const store = applyMiddleware(promiseMiddleware)(createStore)(reducer);
 
   match({ routes, location }, (err, redirectLocation, renderProps) => {
-    if(err) {
+    if (err) {
       console.error(err);
       return res.status(500).end('Internal server error');
     }
 
-    if(!renderProps)
+    if (!renderProps) {
       return res.status(404).end('Not found');
+    }
 
     function renderView() {
       const InitialView = (
-        <Provider store={store}>
-          <RoutingContext {...renderProps} />
-        </Provider>
+        <div id="root">
+          <Provider store={store}>
+            <RoutingContext {...renderProps} />
+          </Provider>
+        </div>
       );
 
       const componentHTML = renderToString(InitialView);
@@ -50,18 +56,17 @@ app.use( (req, res) => {
       <html>
         <head>
           <meta charset="utf-8">
-          <title>cl1ck-stack/title>
+          <title>cl1ck-stack</title>
 
           <script>
             window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};
           </script>
         </head>
         <body>
-          <div id="app">${componentHTML}</div>
+          <div id="mount">${componentHTML}</div>
           <script type="application/javascript" src="/bundle.js"></script>
         </body>
-      </html>
-      `;
+      </html>`;
 
       return HTML;
     }
@@ -69,7 +74,10 @@ app.use( (req, res) => {
     fetchComponentData(store.dispatch, renderProps.components, renderProps.params)
       .then(renderView)
       .then(html => res.end(html))
-      .catch(err => res.end(err.message));
+      .catch(err => {
+        res.end(err.message);
+        console.log(err.message);
+      });
   });
 });
 
