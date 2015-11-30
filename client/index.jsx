@@ -17,17 +17,32 @@ import 'babel-core/polyfill';
 
 const initialState = immutifyState(window.__INITIAL_STATE__);
 const history = createBrowserHistory();
+
 const reducer = combineReducers(
   Object.assign({},
                 reducers,
                 { routing: routeReducer }
                )
 );
+
 const finalCreateStore = compose(
   applyMiddleware(promiseMiddleware),
-  devTools()
+  devTools(),
+  persistState(window.location.href.match(/[?&]debug_session=([^&]+)\b/))
 )(createStore);
+
 const store = finalCreateStore(reducer, initialState);
+
+if (module.hot) {
+  module.hot.accept('../shared/reducers', () => {
+    store.replaceReducer(combineReducers(
+      Object.assign({},
+                    require('../shared/reducers'),
+                    { routing: routeReducer }
+                   )
+    ));
+  });
+}
 
 syncReduxAndRouter(history, store);
 
@@ -37,7 +52,7 @@ render(
       <Router children={routes} history={history} />
     </Provider>
     <DebugPanel top right bottom>
-      <DevTools store={store} monitor={LogMonitor} />
+      <DevTools store={store} monitor={LogMonitor} visibleOnLoad={true} />
     </DebugPanel>
   </div>,
   document.getElementById('mount')
