@@ -12,8 +12,8 @@ import immutifyState from 'lib/immutifyState';
 import { compose, createStore, combineReducers, applyMiddleware } from 'redux';
 import { devTools, persistState } from 'redux-devtools';
 import { DevTools, DebugPanel, LogMonitor } from 'redux-devtools/lib/react';
+// for old browsers
 import 'babel-core/polyfill';
-import 'event-source-polyfill';
 
 const initialState = immutifyState(window.__INITIAL_STATE__);
 const history = createBrowserHistory();
