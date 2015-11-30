@@ -12,6 +12,8 @@ import immutifyState from 'lib/immutifyState';
 import { compose, createStore, combineReducers, applyMiddleware } from 'redux';
 import { devTools, persistState } from 'redux-devtools';
 import { DevTools, DebugPanel, LogMonitor } from 'redux-devtools/lib/react';
+import DiffMonitor from 'redux-devtools-diff-monitor';
+
 // for old browsers
 import 'babel-core/polyfill';
 
@@ -52,7 +54,7 @@ render(
       <Router children={routes} history={history} />
     </Provider>
     <DebugPanel top right bottom>
-      <DevTools store={store} monitor={LogMonitor} visibleOnLoad={true} />
+      <DevTools store={store} monitor={DiffMonitor} visibleOnLoad={true} />
     </DebugPanel>
   </div>,
   document.getElementById('mount')

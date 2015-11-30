@@ -15,13 +15,14 @@ export default class TodosView extends React.Component {
       'margin': '1em 0 1em 1em'
     };
     const dispatch = this.props.dispatch;
+    console.log(this.props.todos);
 
     return (
       <div id="todos-list">
         {
           this.props.todos.map( (todo, index) => {
             return (
-              <Todo todo={todo} key={index} {...bindActionCreators(TodoActions, dispatch)} />
+              <Todo todo={todo} index={index} key={index} {...bindActionCreators(TodoActions, dispatch)} />
             );
           })
         }

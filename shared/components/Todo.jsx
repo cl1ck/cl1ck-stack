@@ -2,15 +2,14 @@ import React from 'react';
 
 export default class Todo extends React.Component {
   handleDelete = (e) => {
-    console.log(this.props);
-    this.props.deleteTodo(this.key);
+    this.props.deleteTodo(this.props.index);
   }
 
   handleEdit = (e) => {
     // 2do: better UI
     let text = window.prompt('', this.props.todo);
 
-    this.props.editTodo(this.key, text);
+    this.props.editTodo(this.props.index, text);
   }
 
   render() {

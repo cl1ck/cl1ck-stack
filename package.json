@@ -23,7 +23,8 @@
     "react-redux": "^4.0.0",
     "react-router": "1.0.0",
     "redux": "^3.0.0",
-    "redux-simple-router": "0.0.10"
+    "redux-simple-router": "0.0.10",
+    "webpack-isomorphic-tools": "^2.2.18"
   },
   "devDependencies": {
     "babel": "^5.8.23",
@@ -35,6 +36,7 @@
     "event-source-polyfill": "0.0.6",
     "react-transform-hmr": "^1.0.1",
     "redux-devtools": "^2.1.5",
+    "redux-devtools-diff-monitor": "git+https://github.com/whetstone/redux-devtools-diff-monitor.git",
     "webpack": "^1.12.1",
     "webpack-dev-middleware": "^1.2.0",
     "webpack-hot-middleware": "^2.4.1"
